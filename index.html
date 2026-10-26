@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Genera contratto</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2F4F7;--sf:#fff;--sf2:#F8FAFC;--ln:#E6E8EE;--ink:#111827;--ink2:#3F4A5A;--ink3:#6B7686;--ac:#0891B2;--acd:#0E7490;--acw:#ECFEFF;--gr:#16A34A;--grw:#DCFCE7;--am:#B45309;--amw:#FEF3C7;--vi:#7C3AED;--viw:#F3E8FF;--bl:#2563EB;--blw:#DBEAFE;--er:#DC2626}
+:root[data-tema="scuro"]{--bg:#0F141B;--sf:#161D27;--sf2:#131A23;--ln:#263243;--ink:#E6EBF2;--ink2:#CBD5E1;--ink3:#94A3B8;--acw:rgba(34,211,238,.1);--grw:rgba(52,211,153,.12);--amw:rgba(245,158,11,.15);--am:#F59E0B;--viw:rgba(167,139,250,.14);--vi:#A78BFA;--blw:rgba(96,165,250,.14);--bl:#60A5FA}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Manrope,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);padding:22px 24px 40px;font-size:13px}
+button,select,input{font-family:inherit}
+a{color:inherit}
+.ph{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.ph h1{font-size:22px;font-weight:800;letter-spacing:-.02em;width:100%}
+.ph p{font-size:13px;color:var(--ink3)}
+.agg{font-size:11px;color:var(--ink3);border:1px solid var(--ln);background:var(--sf);border-radius:999px;padding:3px 10px}
+.grid{display:grid;gap:14px;margin-bottom:14px}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g2{grid-template-columns:320px minmax(0,1fr);align-items:start}
+.c{background:var(--sf);border:1px solid var(--ln);border-radius:14px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.auto{padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.auto .t{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.auto .t svg{color:var(--ac)}
+.auto .d{font-size:11.5px;color:var(--ink3);line-height:1.5}
+.sg{display:inline-flex;border:1px solid var(--ln);border-radius:9px;overflow:hidden;background:var(--sf2);align-self:flex-start}
+.sg button{border:0;border-right:1px solid var(--ln);background:transparent;padding:7px 13px;font-size:12px;font-weight:600;color:var(--ink3);cursor:pointer}
+.sg button:last-child{border-right:0}
+.sg button.on{background:var(--acw);color:var(--ac);box-shadow:inset 0 -2px 0 var(--ac)}
+.sg button:disabled{opacity:.6;cursor:wait}
+.sel{padding:16px;display:flex;flex-direction:column;gap:12px}
+.sel h3{font-size:14px;font-weight:700}
+.sel .sub{font-size:12px;color:var(--ink3);margin-top:-8px}
+.step{display:flex;gap:10px;align-items:center}
+.step i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ln);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-style:normal;color:var(--ink3);flex:none}
+.step.on i{background:var(--ac);border-color:var(--ac);color:#fff}
+.step b{display:block;font-size:12.5px;color:var(--ink3)}.step.on b{color:var(--ink)}
+.step small{display:block;font-size:10.5px;color:var(--ink3)}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase}
+select,input[type=search]{border:1px solid var(--ln);border-radius:9px;padding:9px 11px;font-size:13px;background:var(--sf);color:var(--ink);text-transform:none;letter-spacing:0;font-weight:500;width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);background:var(--sf);color:var(--ink2);border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--ac);color:var(--ac)}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}.btn.pri:hover{background:var(--acd);border-color:var(--acd);color:#fff}
+.btn.lg{padding:10px 16px;font-size:13px}
+.btn.ok{background:var(--grw);border-color:transparent;color:var(--gr)}
+.btn.am{background:var(--amw);border-color:transparent;color:var(--am)}
+.ftr{border-top:1px solid var(--ln);padding:12px 16px}
+.ftr a{font-size:12px;font-weight:600;text-decoration:none;color:var(--ac)}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:700;padding:9px 18px;background:var(--sf2);border-bottom:1px solid var(--ln)}
+td{padding:10px 18px;border-bottom:1px solid var(--ln);vertical-align:middle}
+tr.sez td{background:var(--sf2);padding:8px 18px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px}
+.chip.bl{background:var(--blw);color:var(--bl)}.chip.am{background:var(--amw);color:var(--am)}.chip.vi{background:var(--viw);color:var(--vi)}.chip.gr{background:var(--grw);color:var(--gr)}
+td.nm b{display:block;font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.nm small{display:block;font-size:11.5px;color:var(--ink3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.v{color:var(--ink2);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.a{text-align:right;white-space:nowrap}
+td.a .btn+.btn{margin-left:6px}
+tr.cli{cursor:pointer}tr.cli:hover td{background:var(--sf2)}
+tr.cli td.a{color:var(--ink3);font-size:15px}
+tr.cli:hover td.a{color:var(--ac)}
+.lista{max-height:330px;overflow:auto;scrollbar-width:thin}
+.cerca{padding:10px 18px;border-bottom:1px solid var(--ln)}
+.empty{text-align:center;padding:18px;color:var(--ink3);font-size:12.5px}
+.chiave{max-width:420px;background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:18px}
+.chiave p{font-size:13px;color:var(--ink3);margin-bottom:10px}
+.chiave form{display:flex;gap:8px}
+.chiave input{flex:1;border:1px solid var(--ln);border-radius:999px;padding:9px 14px;font-size:13px;background:var(--sf);color:var(--ink)}
+.dtoast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:100;background:var(--sf);border:1px solid var(--ln);box-shadow:0 10px 30px rgba(16,24,40,.15)}
+.dtoast.err{border-color:var(--er);color:var(--er)}
+@media (max-width:1000px){.g3,.g2{grid-template-columns:1fr}}
+</style></head><body>
+<div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg">automatismi validi per tutti i clienti</span></div>
+<div id="corpo"><p class="empty" style="text-align:left">Caricamento...</p></div>
+<script>
+/* PORTALE NEXT-110: stessa pagina di prima (n8n «WF – Prepara Contratto (Submit)», GET /prepara-contratto-form),
+   ridisegnata come il mockup del portale. I dati e gli interruttori arrivano dalla funzione genera-contratto
+   (password della regia); carica pratiche, genera, invia, gia inviato e reinvia restano sui webhook n8n di prima. */
+var EF='https://pnxhthrheqeucoisifjw.supabase.co/functions/v1/genera-contratto';
+var N8='https://n8n.srv1030489.hstgr.cloud/webhook/';
+var PASS='', DATI=null;
+var MODI={doc:{t:'Richiesta documentazione',v:['automatica','manuale'],e:['Automatica','Manuale'],ico:'up',
+  s:['Quando il venditore carica la pratica la richiesta documenti parte da sola al cliente: a te non arriva nessuna mail di conferma.',
+     'Quando il venditore carica la pratica ti arriva la mail di conferma: la richiesta parte al cliente solo quando premi il pulsante.']},
+ gen:{t:'Generazione del contratto',v:['automatica','manuale'],e:['Automatica','Manuale'],ico:'gen',
+  s:['Quando un cliente ha tutti i documenti il contratto si genera da solo: non arriva la mail «Documenti completi», arriva solo quella che te lo fa vedere con il pulsante INVIA.',
+     'Quando un cliente ha tutti i documenti arriva la mail «Documenti completi» con il pulsante GENERA CONTRATTO: il contratto si fa quando lo decidi tu.']},
+ appr:{t:'Controllo del contratto',v:['anche_commerciale','solo_sante'],e:['Anche al commerciale','Solo a te'],ico:'firm',
+  s:['Il contratto generato arriva a te come sempre e in più a commerciale@next-srl.eu, presentato come controllo: se risponde che va bene parte al cliente, se risponde che non va bene lo registriamo e gli si apre la maschera per correggere.',
+     'Il contratto generato arriva soltanto a te, e sei tu a mandarlo al cliente.']}};
+var ICO={up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',gen:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v6M9 15h6"/>',firm:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>'};
+function svg(k){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[k]+'</svg>';}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function jesc(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+/* documenti: proxy n8n /webhook/doc con bucket e percorso separati, poi download (come nella pagina di prima) */
+function docUrl(u){var s=String(u||'');if(!s)return '';var PRE='https://pnxhthrheqeucoisifjw.supabase.co/storage/v1/object/public/';if(s.indexOf(PRE)!==0)return s;var r=s.slice(PRE.length),i=r.indexOf('/');if(i<1)return s;return N8+'doc?b='+encodeURIComponent(r.slice(0,i))+'&p='+encodeURIComponent(r.slice(i+1));}
+function docName(u,f){var s=String(u||'').split('?')[0],l=s.slice(s.lastIndexOf('/')+1),n=l;try{n=decodeURIComponent(l)}catch(e){}return n||f||'contratto.pdf';}
+function pdfBtn(u){return '<a href="#" class="btn" onclick="event.preventDefault();apriDoc(\''+esc(jesc(docUrl(u)))+'\',\''+esc(jesc(docName(u)))+'\')">Scarica PDF</a>';}
+function dtoast(msg,err,ms){var t=document.getElementById('dtoast');if(!t){t=document.createElement('div');t.id='dtoast';document.body.appendChild(t);}t.className='dtoast'+(err?' err':'');t.textContent=msg;if(window.__dt){clearTimeout(window.__dt);window.__dt=null;}if(ms>0)window.__dt=setTimeout(dtoastHide,ms);}
+function dtoastHide(){if(window.__dt){clearTimeout(window.__dt);window.__dt=null;}var t=document.getElementById('dtoast');if(t&&t.parentNode)t.parentNode.removeChild(t);}
+function apriDoc(u,nome){var nm=nome||'contratto.pdf';if(!window.__dl)window.__dl={};if(window.__dl[u])return;window.__dl[u]=1;dtoast('Scaricamento di '+nm+'…',false,0);
+ fetch(u).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.blob();}).then(function(b){var bu=URL.createObjectURL(b),a=document.createElement('a');a.href=bu;a.download=nm;a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(function(){try{URL.revokeObjectURL(bu)}catch(e){}},10000);window.__dl[u]=0;dtoastHide();})
+ .catch(function(e){window.__dl[u]=0;dtoast('Non riesco a scaricare il documento: '+(e&&e.message||e),true,6000);});}
+function data(t){return t?new Date(t).toLocaleDateString('it-IT'):'';}
+/* stesse regole della pagina di prima per dividere i contratti */
+function dividi(pratiche){var G={},I={},F={};
+ pratiche.forEach(function(pc){var p=pc.practices||{},st=p.status||'new',pdf=p.contract_pdf_url||null,up=p.updated_at||'',sa=p.contract_sent_at||'',fi=p.contratto_firmato||false;
+  if(st==='contract_generated'&&pdf){var x=G[pc.client_id];if(!x||up>x.updated_at)G[pc.client_id]={practice_id:pc.practice_id,contract_pdf_url:pdf,updated_at:up};}
+  if(st==='contract_sent'&&pdf){if(fi){var y=F[pc.client_id];if(!y||sa>y.sent_at)F[pc.client_id]={practice_id:pc.practice_id,contract_pdf_url:pdf,sent_at:sa};}
+   else{var z=I[pc.client_id];if(!z||sa>z.sent_at)I[pc.client_id]={practice_id:pc.practice_id,contract_pdf_url:pdf,sent_at:sa};}}});
+ return {G:G,I:I,F:F};}
+function auto(par){var m=MODI[par],on=DATI.scelte[par]===m.v[0]?0:1;
+ return '<section class="c auto"><div class="t">'+svg(m.ico)+m.t+'</div><div class="sg">'+m.e.map(function(e,i){return '<button data-par="'+par+'" data-val="'+m.v[i]+'"'+(i===on?' class="on"':'')+'>'+e+'</button>';}).join('')+'</div><div class="d">'+m.s[on]+'</div></section>';}
+function sez(t,n,c,rows,vuoto){return '<tr class="sez"><td colspan="3"><span class="chip '+c+'">'+t+' · '+n+'</span></td></tr>'+(rows||'<tr><td colspan="3" class="empty">'+vuoto+'</td></tr>');}
+function nm(c,extra){var meta=[c.email,c.res_city].filter(Boolean).join(' · ');return '<td class="nm"><b>'+esc(c.full_name||'—')+'</b><small>'+esc(c.fiscal_code||'')+(extra?' · '+extra:'')+'</small></td><td class="v">'+esc(meta)+'</td>';}
+function disegna(){
+ var C=DATI.clienti, D=dividi(DATI.pratiche);
+ var opt='<option value="">— Seleziona un cliente —</option>'+C.map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.full_name)+' - '+esc(c.fiscal_code||'')+' - '+esc(c.email||'')+' - '+esc(c.res_city||'')+'</option>';}).join('');
+ var tutti=C.map(function(c){return '<tr class="cli" data-cli="'+esc(c.id)+'" data-q="'+esc(((c.full_name||'')+' '+(c.fiscal_code||'')+' '+(c.email||'')+' '+(c.res_city||'')).toLowerCase())+'">'+nm(c)+'<td class="a">→</td></tr>';}).join('');
+ var gen=C.filter(function(c){return D.G[c.id];}).map(function(c){var g=D.G[c.id];
+  return '<tr>'+nm(c,g.updated_at?'generato il '+data(g.updated_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<a class="btn pri" href="'+N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url)+'">Invia</a><a class="btn ok" href="'+N8+'segna-contratto-inviato?practice_id='+encodeURIComponent(g.practice_id)+'" onclick="return confirm(\'Confermi che il contratto di '+esc(jesc(c.full_name||''))+' è già stato inviato manualmente?\')">✓ Già inviato</a></td></tr>';}).join('');
+ var inv=C.filter(function(c){return D.I[c.id];}).map(function(c){var g=D.I[c.id];
+  return '<tr>'+nm(c,g.sent_at?'inviato il '+data(g.sent_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<a class="btn am" href="'+N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url)+'" onclick="return confirm(\'Reinviare il contratto a '+esc(jesc(c.full_name||''))+'?\')">↩ Reinvia</a></td></tr>';}).join('');
+ var fir=C.filter(function(c){return D.F[c.id];}).map(function(c){var g=D.F[c.id];
+  return '<tr>'+nm(c,g.sent_at?'firmato il '+data(g.sent_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'</td></tr>';}).join('');
+ var cg='<colgroup><col style="width:34%"><col style="width:30%"><col style="width:36%"></colgroup>';
+ var h='<div class="grid g3">'+auto('doc')+auto('gen')+auto('appr')+'</div>'
+  +'<div class="grid g2"><section class="c"><div class="sel"><div><h3>Seleziona il cliente</h3></div><div class="sub">Dal menu a tendina (tutti) oppure dalla lista</div>'
+  +'<div class="step on"><i>1</i><span><b>Cliente</b><small>scegli chi</small></span></div><div class="step"><i>2</i><span><b>Pratica</b><small>carica le sue pratiche</small></span></div><div class="step"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
+  +'<form method="POST" action="'+N8+'prepara-contratto-form" id="fSel" style="display:flex;flex-direction:column;gap:12px"><label class="f">Tutti i clienti<select name="client_id" id="sCli" required>'+opt+'</select></label><button class="btn pri lg" type="submit">Carica pratiche</button></form></div>'
+  +'<div class="ftr"><a href="'+N8+'lead-form">← Torna al form agente</a></div></section>'
+  +'<section class="c" style="overflow:hidden"><table>'+cg+'<tbody>'
+  +sez('Tutti i clienti',C.length,'bl','<tr><td colspan="3" style="padding:0"><div class="cerca"><input type="search" id="cerca" placeholder="Cerca nome, codice fiscale, comune..."></div><div class="lista"><table>'+cg+'<tbody id="tutti">'+tutti+'</tbody></table></div></td></tr>','Nessun cliente trovato.')
+  +sez('Generati — da inviare',Object.keys(D.G).length?C.filter(function(c){return D.G[c.id];}).length:0,'am',gen,'Nessun contratto in attesa di invio')
+  +sez('Inviati',C.filter(function(c){return D.I[c.id];}).length,'vi',inv,'Nessun contratto in attesa di firma')
+  +sez('Contratti firmati',C.filter(function(c){return D.F[c.id];}).length,'gr',fir?'<tr><td colspan="3" style="padding:0"><div class="lista"><table>'+cg+'<tbody>'+fir+'</tbody></table></div></td></tr>':'','Nessun contratto firmato')
+  +'</tbody></table></section></div>';
+ document.getElementById('corpo').innerHTML=h;
+ document.getElementById('cerca').oninput=function(){var q=this.value.trim().toLowerCase();document.querySelectorAll('#tutti tr').forEach(function(r){r.style.display=!q||r.getAttribute('data-q').indexOf(q)>=0?'':'none';});};
+}
+/* un cliente dalla lista: stessa cosa del pulsante della pagina di prima (POST client_id) */
+document.addEventListener('click',function(e){
+ var r=e.target.closest('tr.cli');if(r){var s=document.getElementById('sCli');s.value=r.getAttribute('data-cli');document.getElementById('fSel').submit();return;}
+ var b=e.target.closest('.sg button');if(b&&!b.classList.contains('on'))imposta(b.getAttribute('data-par'),b.getAttribute('data-val'),b);
+});
+async function imposta(par,val,b){document.querySelectorAll('.sg button').forEach(function(x){x.disabled=true;});
+ try{var r=await fetch(EF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t:PASS,imposta:{par:par,valore:val}})});var d=await r.json();if(!d.ok)throw new Error(d.errore||'errore');DATI.scelte=d.scelte;disegna();dtoast('Salvato',false,1800);}
+ catch(e){dtoast('Non salvato: '+(e.message||e),true,5000);document.querySelectorAll('.sg button').forEach(function(x){x.disabled=false;});}}
+function chiediPass(msg){document.getElementById('corpo').innerHTML='<div class="chiave"><p>'+(msg||'Scrivi la password della regia per aprire Genera contratto.')+'</p><form id="fp"><input type="password" id="ip" autocomplete="current-password" placeholder="password"><button class="btn pri">Entra</button></form></div>';
+ document.getElementById('fp').onsubmit=function(e){e.preventDefault();PASS=document.getElementById('ip').value.trim();try{sessionStorage.setItem('regia_pass',PASS)}catch(x){}carica();};}
+async function carica(){if(!PASS){chiediPass();return;}
+ try{var r=await fetch(EF+'?t='+encodeURIComponent(PASS));var d=await r.json();
+  if(r.status===401){PASS='';try{sessionStorage.removeItem('regia_pass')}catch(x){}chiediPass('Password non valida, riprova.');return;}
+  if(!d.ok)throw new Error(d.errore||'errore');DATI=d;disegna();}
+ catch(e){document.getElementById('corpo').innerHTML='<p class="empty">Errore: '+esc(e.message||e)+'</p>';}}
+window.addEventListener('message',function(e){var d=e.data||{};
+ if(d.tipo==='tema'&&(d.tema==='chiaro'||d.tema==='scuro'))document.documentElement.setAttribute('data-tema',d.tema);
+ if(d.tipo==='pass'&&d.pass&&!PASS){PASS=d.pass;carica();}});
+try{PASS=sessionStorage.getItem('regia_pass')||'';}catch(e){}
+try{var t=window.parent.document.documentElement.getAttribute('data-tema');if(t)document.documentElement.setAttribute('data-tema',t);}catch(e){}
+if(PASS)carica();else{try{window.parent.postMessage({tipo:'chiedi_pass'},'*');}catch(e){}setTimeout(function(){if(!PASS)chiediPass();},700);}
+</script></body></html>
