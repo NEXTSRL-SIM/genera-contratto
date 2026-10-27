@@ -47,6 +47,7 @@ th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercas
 td{padding:10px 18px;border-bottom:1px solid var(--ln);vertical-align:middle}
 tr.sez td{background:var(--sf2);padding:8px 18px}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px}
+.chip.pk{background:#FCE7F3;color:#BE185D}.chip.gy{background:var(--sf2);color:var(--ink3)}
 .chip.bl{background:var(--blw);color:var(--bl)}.chip.am{background:var(--amw);color:var(--am)}.chip.vi{background:var(--viw);color:var(--vi)}.chip.gr{background:var(--grw);color:var(--gr)}
 td.nm b{display:block;font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 td.nm small{display:block;font-size:11.5px;color:var(--ink3);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -65,9 +66,18 @@ tr.cli:hover td.a{color:var(--ac)}
 .chiave input{flex:1;border:1px solid var(--ln);border-radius:999px;padding:9px 14px;font-size:13px;background:var(--sf);color:var(--ink)}
 .dtoast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;z-index:100;background:var(--sf);border:1px solid var(--ln);box-shadow:0 10px 30px rgba(16,24,40,.15)}
 .dtoast.err{border-color:var(--er);color:var(--er)}
+.pt{display:flex;gap:10px;align-items:center}.pt .ic{width:34px;height:34px;border-radius:10px;background:var(--acw);color:var(--ac);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.cli1{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--ln);border-radius:12px;background:var(--sf2)}
+.cli1 .av{width:34px;height:34px;border-radius:50%;background:var(--acw);color:var(--ac);display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex:none}
+.cli1 b{display:block;font-size:13px}.cli1 small{display:block;font-size:11px;color:var(--ink3)}
+.hd{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.hd .i{width:28px;height:28px;border-radius:8px;background:var(--acw);color:var(--ac);display:inline-flex;align-items:center;justify-content:center;flex:none}
+.hd b{display:block;font-size:14px;font-weight:700}.hd small{display:block;font-size:12px;color:var(--ink3);margin-top:1px}
+.hd .x{margin-left:auto}
+.step.ok i{background:var(--gr);border-color:var(--gr);color:#fff}.step.ok b{color:var(--gr)}
 @media (max-width:1000px){.g3,.g2{grid-template-columns:1fr}}
 </style></head><body>
-<div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg">automatismi validi per tutti i clienti</span></div>
+<div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg" id="phx">automatismi validi per tutti i clienti</span></div>
 <div id="corpo"><p class="empty" style="text-align:left">Caricamento...</p></div>
 <script>
 /* PORTALE NEXT-110: stessa pagina di prima (n8n «WF – Prepara Contratto (Submit)», GET /prepara-contratto-form),
@@ -85,8 +95,8 @@ var MODI={doc:{t:'Richiesta documentazione',v:['automatica','manuale'],e:['Autom
  appr:{t:'Controllo del contratto',v:['anche_commerciale','solo_sante'],e:['Anche al commerciale','Solo a te'],ico:'firm',
   s:['Il contratto generato arriva a te come sempre e in più a commerciale@next-srl.eu, presentato come controllo: se risponde che va bene parte al cliente, se risponde che non va bene lo registriamo e gli si apre la maschera per correggere.',
      'Il contratto generato arriva soltanto a te, e sei tu a mandarlo al cliente.']}};
-var ICO={up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',gen:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v6M9 15h6"/>',firm:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>'};
-function svg(k){return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[k]+'</svg>';}
+var ICO={sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',flame:'<path d="M12 3c1 3 4 5 4 9a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 0-8z"/>',bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M5 20h14"/>',gen:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 12v6M9 15h6"/>',firm:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>'};
+function svg(k,n){n=n||15;return '<svg width="'+n+'" height="'+n+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ICO[k]+'</svg>';}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function jesc(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 /* documenti: proxy n8n /webhook/doc con bucket e percorso separati, poi download (come nella pagina di prima) */
@@ -132,14 +142,48 @@ function disegna(){
   +sez('Inviati',C.filter(function(c){return D.I[c.id];}).length,'vi',inv,'Nessun contratto in attesa di firma')
   +sez('Contratti firmati',C.filter(function(c){return D.F[c.id];}).length,'gr',fir?'<tr><td colspan="3" style="padding:0"><div class="lista"><table>'+cg+'<tbody>'+fir+'</tbody></table></div></td></tr>':'','Nessun contratto firmato')
   +'</tbody></table></section></div>';
- document.getElementById('corpo').innerHTML=h;
+ document.getElementById('corpo').innerHTML=h; document.getElementById('phx').textContent='automatismi validi per tutti i clienti';
+ document.getElementById('fSel').onsubmit=function(e){e.preventDefault();var v=document.getElementById('sCli').value;if(v)apriCliente(v);};
  document.getElementById('cerca').oninput=function(){var q=this.value.trim().toLowerCase();document.querySelectorAll('#tutti tr').forEach(function(r){r.style.display=!q||r.getAttribute('data-q').indexOf(q)>=0?'':'none';});};
 }
 /* un cliente dalla lista: stessa cosa del pulsante della pagina di prima (POST client_id) */
 document.addEventListener('click',function(e){
- var r=e.target.closest('tr.cli');if(r){var s=document.getElementById('sCli');s.value=r.getAttribute('data-cli');document.getElementById('fSel').submit();return;}
+ var r=e.target.closest('tr.cli');if(r){apriCliente(r.getAttribute('data-cli'));return;}
+ var cb=e.target.closest('[data-cambia]');if(cb){e.preventDefault();disegna();window.scrollTo(0,0);return;}
  var b=e.target.closest('.sg button');if(b&&!b.classList.contains('on'))imposta(b.getAttribute('data-par'),b.getAttribute('data-val'),b);
 });
+
+/* ===== passo 2: le pratiche del cliente (prima era la pagina n8n che si apriva con «Carica pratiche»).
+   Stesse informazioni e stesso tasto: «Genera contratto» chiama prepara-contratto-submit come prima. ===== */
+var STATI={new:['Nuova','gr'],documents_requested:['Documenti richiesti','am'],documents_uploaded:['Documenti caricati','am'],contract_ready:['Pronta per il contratto','bl'],contract_generated:['Contratto generato','pk'],contract_sent:['Contratto inviato','vi'],contract_signed:['Contratto firmato','gr']};
+function fmtE(v){var p=Number(v).toFixed(2).split('.');return p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+p[1]+' €';}
+async function apriCliente(id){
+ var c=(DATI.clienti||[]).filter(function(x){return x.id===id;})[0]||{};
+ document.getElementById('corpo').innerHTML='<p class="empty" style="text-align:left">Carico le pratiche…</p>';
+ try{var r=await fetch(EF+'?t='+encodeURIComponent(PASS)+'&cliente='+encodeURIComponent(id));var d=await r.json();if(!d.ok)throw new Error(d.errore||'errore');passo2(c,d.pratiche||[]);}
+ catch(e){document.getElementById('corpo').innerHTML='<p class="empty">Errore: '+esc(e.message||e)+'</p><p><a href="#" class="btn" data-cambia="1">← Torna indietro</a></p>';}
+}
+function passo2(c,rows){
+ var f=rows[0]&&rows[0].clients||{}; var nome=c.full_name||f.full_name||f.fiscal_code||'—', cf=c.fiscal_code||f.fiscal_code||'';
+ var ini=nome.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+ var righe=rows.map(function(x){var p=x.practices||{},fis=(x.clients&&x.clients.fiscal_code)||'',origin=p.origin||'—',st=p.status||'new';
+  var tipo=p.product_type==='fotovoltaico'?'Fotovoltaico':p.product_type==='termico'?'Termico':p.product_type==='entrambi'?'FV + Termico':origin;
+  var ico=(p.product_type==='fotovoltaico'||origin.toLowerCase().indexOf('fotovoltaico')>=0)?'sun':(p.product_type==='termico'||origin.toLowerCase().indexOf('termico')>=0)?'flame':'bolt';
+  var tot=(Number(p.fv_totale_eur)||0)+(Number(p.heat_totale_eur)||0);
+  var det=[p.fv_kwp?String(p.fv_kwp).replace('.',',')+' kWp':'',tot?fmtE(tot):'',p.created_at?new Date(p.created_at).toLocaleDateString('it-IT'):''].filter(Boolean).join(' · ');
+  var sl=STATI[st]||[st.replace(/_/g,' ').replace(/\b\w/g,function(m){return m.toUpperCase();}),'gy'];
+  var url=N8+'prepara-contratto-submit?practice_combo='+encodeURIComponent(x.practice_id+'|'+fis);
+  return '<tr><td class="nm"><div class="pt"><span class="ic">'+svg(ico,16)+'</span><span style="min-width:0"><b>'+esc(tipo)+'</b><small>'+esc(origin)+'</small></span></div></td><td class="v" style="white-space:normal">'+esc(det)+'</td><td><span class="chip '+sl[1]+'">'+esc(sl[0])+'</span></td><td class="a"><a class="btn pri" href="'+url+'">'+svg('gen',13)+'Genera contratto</a></td></tr>';}).join('');
+ var cg='<colgroup><col style="width:34%"><col style="width:26%"><col style="width:18%"><col style="width:22%"></colgroup>';
+ var h='<div class="grid g2"><section class="c"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Cliente scelto</b><small>Ora scegli la pratica da cui fare il contratto</small></div></div>'
+  +'<div class="sel"><div class="step ok"><i>✓</i><span><b>Cliente</b><small>scelto</small></span></div><div class="step on"><i>2</i><span><b>Pratica</b><small>scegli quale</small></span></div><div class="step"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
+  +'<div class="cli1"><div style="display:flex;align-items:center;gap:10px;min-width:0"><span class="av">'+esc(ini)+'</span><span style="min-width:0"><b>'+esc(nome)+'</b><small>'+esc(cf)+'</small></span></div><a href="#" class="btn" data-cambia="1">← Cambia</a></div></div>'
+  +'<div class="ftr"><a href="#" data-cambia="1">← Torna a Genera contratto</a></div></section>'
+  +'<section class="c" style="overflow:hidden"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Seleziona la pratica</b><small>Scegli la pratica e premi «Genera contratto».</small></div><span class="x chip bl" style="background:var(--acw);color:var(--ac)">'+rows.length+(rows.length===1?' pratica':' pratiche')+'</span></div>'
+  +(rows.length?'<table>'+cg+'<thead><tr><th>Pratica</th><th>Dettagli</th><th>Stato</th><th></th></tr></thead><tbody>'+righe+'</tbody></table>':'<p class="empty">Nessuna pratica trovata per questo cliente.</p>')
+  +'</section></div>';
+ document.getElementById('corpo').innerHTML=h; document.getElementById('phx').textContent='passo 2 di 3'; window.scrollTo(0,0);
+}
 async function imposta(par,val,b){document.querySelectorAll('.sg button').forEach(function(x){x.disabled=true;});
  try{var r=await fetch(EF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t:PASS,imposta:{par:par,valore:val}})});var d=await r.json();if(!d.ok)throw new Error(d.errore||'errore');DATI.scelte=d.scelte;disegna();dtoast('Salvato',false,1800);}
  catch(e){dtoast('Non salvato: '+(e.message||e),true,5000);document.querySelectorAll('.sg button').forEach(function(x){x.disabled=false;});}}
