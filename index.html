@@ -89,6 +89,12 @@ tr.cli:hover td.a{color:var(--ac)}
 .ig b{font-size:13px;word-break:break-all}
 .brow{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px}
 .mnote{margin:0 18px 18px;padding:10px 12px;background:var(--blw);color:var(--bl);border-radius:10px;font-size:12px}
+.rd{display:inline-block;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ln);background:var(--sf);vertical-align:middle}
+tr.prat{cursor:pointer}tr.prat:hover td{background:var(--sf2)}
+tr.prat.scelta td{background:var(--acw)}tr.prat.scelta .pt .ic{background:var(--sf)}tr.prat.scelta .rd{border:5px solid var(--ac)}
+.piede{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid var(--ln);flex-wrap:wrap}
+.piede span{font-size:12.5px;color:var(--ink3)}.piede b{color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 @media (max-width:1000px){.g3,.g2{grid-template-columns:1fr}}
 </style></head><body>
 <div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg" id="phx">automatismi validi per tutti i clienti</span></div>
@@ -163,6 +169,11 @@ function disegna(){
 /* un cliente dalla lista: stessa cosa del pulsante della pagina di prima (POST client_id) */
 document.addEventListener('click',function(e){
  var r=e.target.closest('tr.cli');if(r){apriCliente(r.getAttribute('data-cli'));return;}
+ var pr=e.target.closest('tr.prat');if(pr){document.querySelectorAll('tr.prat').forEach(function(x){x.classList.toggle('scelta',x===pr);});
+  var st=document.querySelector('.step.p2');if(st){st.classList.remove('on');st.classList.add('ok');st.querySelector('i').textContent='✓';st.querySelector('small').textContent='scelta';}
+  var s3=document.querySelector('.step.p3');if(s3)s3.classList.add('on');
+  var b=document.getElementById('bGen');b.disabled=false;b.setAttribute('data-genera',pr.getAttribute('data-url'));
+  document.getElementById('scelta').innerHTML='Scelta: <b>'+esc(pr.querySelector('td.nm b').textContent)+'</b> · '+esc(pr.querySelector('td.v').textContent);return;}
  var g=e.target.closest('[data-genera]');if(g){e.preventDefault();genera(g.getAttribute('data-genera'));return;}
  var tp=e.target.closest('[data-torna2]');if(tp){e.preventDefault();if(P2)passo2(P2.c,P2.rows);return;}
  var cb=e.target.closest('[data-cambia]');if(cb){e.preventDefault();disegna();window.scrollTo(0,0);return;}
@@ -191,14 +202,14 @@ function passo2(c,rows){
   var det=[p.fv_kwp?String(p.fv_kwp).replace('.',',')+' kWp':'',tot?fmtE(tot):'',p.created_at?new Date(p.created_at).toLocaleDateString('it-IT'):''].filter(Boolean).join(' · ');
   var sl=STATI[st]||[st.replace(/_/g,' ').replace(/\b\w/g,function(m){return m.toUpperCase();}),'gy'];
   var url=N8+'prepara-contratto-submit?practice_combo='+encodeURIComponent(x.practice_id+'|'+fis);
-  return '<tr><td class="nm"><div class="pt"><span class="ic">'+svg(ico,16)+'</span><span style="min-width:0"><b>'+esc(tipo)+'</b><small>'+esc(origin)+'</small></span></div></td><td class="v" style="white-space:normal">'+esc(det)+'</td><td><span class="chip '+sl[1]+'">'+esc(sl[0])+'</span></td><td class="a"><a class="btn pri" href="'+url+'" data-genera="'+esc(url)+'">'+svg('gen',13)+'Genera contratto</a></td></tr>';}).join('');
- var cg='<colgroup><col style="width:34%"><col style="width:26%"><col style="width:18%"><col style="width:22%"></colgroup>';
+  return '<tr class="prat" data-url="'+esc(url)+'"><td class="nm"><div class="pt"><span class="ic">'+svg(ico,16)+'</span><span style="min-width:0"><b>'+esc(tipo)+'</b><small>'+esc(origin)+'</small></span></div></td><td class="v" style="white-space:normal">'+esc(det)+'</td><td><span class="chip '+sl[1]+'">'+esc(sl[0])+'</span></td><td class="a"><span class="rd"></span></td></tr>';}).join('');
+ var cg='<colgroup><col style="width:38%"><col style="width:32%"><col style="width:22%"><col style="width:8%"></colgroup>';
  var h='<div class="grid g2"><section class="c"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Cliente scelto</b><small>Ora scegli la pratica da cui fare il contratto</small></div></div>'
-  +'<div class="sel"><div class="step ok"><i>✓</i><span><b>Cliente</b><small>scelto</small></span></div><div class="step on"><i>2</i><span><b>Pratica</b><small>scegli quale</small></span></div><div class="step"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
+  +'<div class="sel"><div class="step ok"><i>✓</i><span><b>Cliente</b><small>scelto</small></span></div><div class="step on p2"><i>2</i><span><b>Pratica</b><small>scegli quale</small></span></div><div class="step p3"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
   +'<div class="cli1"><div style="display:flex;align-items:center;gap:10px;min-width:0"><span class="av">'+esc(ini)+'</span><span style="min-width:0"><b>'+esc(nome)+'</b><small>'+esc(cf)+'</small></span></div><a href="#" class="btn" data-cambia="1">← Cambia</a></div></div>'
   +'<div class="ftr"><a href="#" data-cambia="1">← Torna a Genera contratto</a></div></section>'
-  +'<section class="c" style="overflow:hidden"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Seleziona la pratica</b><small>Scegli la pratica e premi «Genera contratto».</small></div><span class="x chip bl" style="background:var(--acw);color:var(--ac)">'+rows.length+(rows.length===1?' pratica':' pratiche')+'</span></div>'
-  +(rows.length?'<table>'+cg+'<thead><tr><th>Pratica</th><th>Dettagli</th><th>Stato</th><th></th></tr></thead><tbody>'+righe+'</tbody></table>':'<p class="empty">Nessuna pratica trovata per questo cliente.</p>')
+  +'<section class="c" style="overflow:hidden"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Seleziona la pratica</b><small>Clicca la pratica, poi premi «Genera contratto».</small></div><span class="x chip bl" style="background:var(--acw);color:var(--ac)">'+rows.length+(rows.length===1?' pratica':' pratiche')+'</span></div>'
+  +(rows.length?'<table>'+cg+'<thead><tr><th>Pratica</th><th>Dettagli</th><th>Stato</th><th></th></tr></thead><tbody>'+righe+'</tbody></table><div class="piede"><span id="scelta">Clicca la pratica da cui fare il contratto.</span><button class="btn pri lg" id="bGen" disabled>'+svg('gen',13)+'Genera contratto</button></div>':'<p class="empty">Nessuna pratica trovata per questo cliente.</p>')
   +'</section></div>';
  document.getElementById('corpo').innerHTML=h; document.getElementById('phx').textContent='passo 2 di 3'; window.scrollTo(0,0);
 }
