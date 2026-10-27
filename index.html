@@ -96,6 +96,21 @@ tr.prat.scelta td{background:var(--acw)}tr.prat.scelta .pt .ic{background:var(--
 .piede span{font-size:12.5px;color:var(--ink3)}.piede b{color:var(--ink)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 @media (max-width:1000px){.g3,.g2{grid-template-columns:1fr}}
+
+/* PORTALE NEXT-110: finestre a video del portale al posto degli avvisi del browser */
+.velo{position:fixed;inset:0;background:rgba(15,20,27,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:90}
+.fin{background:var(--sf,#fff);color:var(--ink,#111827);border:1px solid var(--ln,#E6E8EE);border-radius:16px;width:100%;max-width:480px;box-shadow:0 20px 50px rgba(16,24,40,.25);overflow:hidden;font-family:inherit}
+.fin .fh{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 8px}
+.fin .fh .fi{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex:none;font-size:16px;font-weight:800}
+.fin .fh b{display:block;font-size:15px;font-weight:800}
+.fin .fm{padding:4px 20px 16px 66px;font-size:13.5px;line-height:1.55;color:var(--ink2,#3F4A5A)}
+.fin .fp{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--ln,#E6E8EE);background:var(--sf2,#F8FAFC)}
+.fin .fb{border:1px solid var(--ln,#E6E8EE);background:var(--sf,#fff);color:var(--ink2,#3F4A5A);border-radius:999px;padding:8px 16px;font:700 12.5px inherit;font-family:inherit;cursor:pointer}
+.fin .fb.si{background:var(--ac,#0891B2);border-color:var(--ac,#0891B2);color:#fff}
+.fin .fb.rosso{background:#DC2626;border-color:#DC2626;color:#fff}
+.fin .gira{width:16px;height:16px;border:2px solid var(--acw,#ECFEFF);border-top-color:var(--ac,#0891B2);border-radius:50%;animation:fgira .8s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px}
+@keyframes fgira{to{transform:rotate(360deg)}}
+button.btn{font-family:inherit;cursor:pointer}
 </style></head><body>
 <div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg" id="phx">automatismi validi per tutti i clienti</span></div>
 <div id="corpo"><p class="empty" style="text-align:left">Caricamento...</p></div>
@@ -145,9 +160,9 @@ function disegna(){
  var opt='<option value="">— Seleziona un cliente —</option>'+C.map(function(c){return '<option value="'+esc(c.id)+'">'+esc(c.full_name)+' - '+esc(c.fiscal_code||'')+' - '+esc(c.email||'')+' - '+esc(c.res_city||'')+'</option>';}).join('');
  var tutti=C.map(function(c){return '<tr class="cli" data-cli="'+esc(c.id)+'" data-q="'+esc(((c.full_name||'')+' '+(c.fiscal_code||'')+' '+(c.email||'')+' '+(c.res_city||'')).toLowerCase())+'">'+nm(c)+'<td class="a">→</td></tr>';}).join('');
  var gen=C.filter(function(c){return D.G[c.id];}).map(function(c){var g=D.G[c.id];
-  return '<tr>'+nm(c,g.updated_at?'generato il '+data(g.updated_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<a class="btn pri" href="'+N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url)+'">Invia</a><a class="btn ok" href="'+N8+'segna-contratto-inviato?practice_id='+encodeURIComponent(g.practice_id)+'" onclick="return confirm(\'Confermi che il contratto di '+esc(jesc(c.full_name||''))+' è già stato inviato manualmente?\')">✓ Già inviato</a></td></tr>';}).join('');
+  return '<tr>'+nm(c,g.updated_at?'generato il '+data(g.updated_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<button class="btn pri" data-invia="'+esc(N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url))+'" data-nome="'+esc(c.full_name||'')+'" data-mail="'+esc(c.email||'')+'">Invia</button><button class="btn ok" data-segna="'+esc(N8+'segna-contratto-inviato?practice_id='+encodeURIComponent(g.practice_id))+'" data-nome="'+esc(c.full_name||'')+'">✓ Già inviato</button></td></tr>';}).join('');
  var inv=C.filter(function(c){return D.I[c.id];}).map(function(c){var g=D.I[c.id];
-  return '<tr>'+nm(c,g.sent_at?'inviato il '+data(g.sent_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<a class="btn am" href="'+N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url)+'" onclick="return confirm(\'Reinviare il contratto a '+esc(jesc(c.full_name||''))+'?\')">↩ Reinvia</a></td></tr>';}).join('');
+  return '<tr>'+nm(c,g.sent_at?'inviato il '+data(g.sent_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'<button class="btn am" data-invia="'+esc(N8+'invia-contratto?practice_id='+encodeURIComponent(g.practice_id)+'&pdf_url='+encodeURIComponent(g.contract_pdf_url))+'" data-nome="'+esc(c.full_name||'')+'" data-mail="'+esc(c.email||'')+'" data-reinvio="1">↩ Reinvia</button></td></tr>';}).join('');
  var fir=C.filter(function(c){return D.F[c.id];}).map(function(c){var g=D.F[c.id];
   return '<tr>'+nm(c,g.sent_at?'firmato il '+data(g.sent_at):'')+'<td class="a">'+pdfBtn(g.contract_pdf_url)+'</td></tr>';}).join('');
  var cg='<colgroup><col style="width:34%"><col style="width:30%"><col style="width:36%"></colgroup>';
@@ -155,7 +170,7 @@ function disegna(){
   +'<div class="grid g2"><section class="c"><div class="sel"><div><h3>Seleziona il cliente</h3></div><div class="sub">Dal menu a tendina (tutti) oppure dalla lista</div>'
   +'<div class="step on"><i>1</i><span><b>Cliente</b><small>scegli chi</small></span></div><div class="step"><i>2</i><span><b>Pratica</b><small>carica le sue pratiche</small></span></div><div class="step"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
   +'<form method="POST" action="'+N8+'prepara-contratto-form" id="fSel" style="display:flex;flex-direction:column;gap:12px"><label class="f">Tutti i clienti<select name="client_id" id="sCli" required>'+opt+'</select></label><button class="btn pri lg" type="submit">Carica pratiche</button></form></div>'
-  +'<div class="ftr"><a href="'+N8+'lead-form">← Torna al form agente</a></div></section>'
+  +'<div class="ftr"><a href="#" data-apri="lead-form">← Torna al form agente</a></div></section>'
   +'<section class="c" style="overflow:hidden"><table>'+cg+'<tbody>'
   +sez('Tutti i clienti',C.length,'bl','<tr><td colspan="3" style="padding:0"><div class="cerca"><input type="search" id="cerca" placeholder="Cerca nome, codice fiscale, comune..."></div><div class="lista"><table>'+cg+'<tbody id="tutti">'+tutti+'</tbody></table></div></td></tr>','Nessun cliente trovato.')
   +sez('Generati — da inviare',Object.keys(D.G).length?C.filter(function(c){return D.G[c.id];}).length:0,'am',gen,'Nessun contratto in attesa di invio')
@@ -247,12 +262,12 @@ function esito(tipo,x){
   h='<div class="grid g2">'+sinistra('ok','ok','contratto creato')+'<section class="c"><div class="hd"><span class="i" style="background:var(--grw);color:var(--gr)">'+svg('firm')+'</span><div><b>Contratto generato</b><small>Next S.r.l.</small></div></div>'
    +'<div class="okban"><i>✓</i><span><b>Contratto creato con successo</b><small>Il PDF è stato salvato e una mail di approvazione è stata inviata.</small></span></div>'
    +'<div class="ig">'+['Cliente','Codice Fiscale','Email','Practice ID'].map(function(k){return '<div><span>'+esc(k==='Practice ID'?'Pratica':k)+'</span><b>'+esc(d[k]||'—')+'</b></div>';}).join('')+'</div>'
-   +'<div class="brow">'+(x.pdf?pdfBtn(x.pdf).replace('class="btn"','class="btn pri"'):'')+'<a class="btn" href="'+N8+'lead-form">Modifica dati</a><a class="btn" href="#" data-cambia="1">← Genera altro</a></div>'
+   +'<div class="brow">'+(x.pdf?pdfBtn(x.pdf).replace('class="btn"','class="btn pri"'):'')+'<a class="btn" href="#" data-apri="lead-form">Modifica dati</a><a class="btn" href="#" data-cambia="1">← Genera altro</a></div>'
    +(x.note?'<div class="mnote">'+esc(x.note)+'</div>':'')+'</section></div>';
  } else {
   h='<div class="grid g2">'+sinistra('ok','ko','non riuscito')+'<section class="c"><div class="hd"><span class="i" style="background:#FEF2F2;color:var(--er);font-weight:800">!</span><div><b>Contratto non generato</b><small>Correggi i dati e riprova</small></div></div>'
    +'<div class="koban">'+esc(x.msg||'')+(x.campi&&x.campi.length?'<ul>'+x.campi.map(function(c){return '<li>'+esc(c)+'</li>';}).join('')+'</ul>':'')+'</div>'
-   +'<div class="brow" style="padding-top:16px"><a class="btn pri" href="'+N8+'lead-form">Modifica dati</a><a class="btn" href="#" data-torna2="1">← Torna alle pratiche</a></div></section></div>';
+   +'<div class="brow" style="padding-top:16px"><a class="btn pri" href="#" data-apri="lead-form">Modifica dati</a><a class="btn" href="#" data-torna2="1">← Torna alle pratiche</a></div></section></div>';
  }
  document.getElementById('corpo').innerHTML=h; window.scrollTo(0,0);
 }
@@ -272,4 +287,46 @@ window.addEventListener('message',function(e){var d=e.data||{};
 try{PASS=sessionStorage.getItem('regia_pass')||'';}catch(e){}
 try{var t=window.parent.document.documentElement.getAttribute('data-tema');if(t)document.documentElement.setAttribute('data-tema',t);}catch(e){}
 if(PASS)carica();else{try{window.parent.postMessage({tipo:'chiedi_pass'},'*');}catch(e){}setTimeout(function(){if(!PASS)chiediPass();},700);}
+
+/* PORTALE NEXT-110: finestre a video (chiedi, avvisa, attendi) al posto di confirm/alert del browser */
+function fChiudi(){var v=document.getElementById('fVelo');if(v)v.remove();}
+function fEsc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fApri(tipo,titolo,testoHtml,bottoni){fChiudi();var col={chiedi:['var(--acw,#ECFEFF)','var(--ac,#0891B2)','?'],ok:['var(--grw,#DCFCE7)','var(--gr,#16A34A)','✓'],attenzione:['var(--amw,#FEF3C7)','var(--am,#B45309)','!'],errore:['#FEE2E2','#DC2626','×'],attesa:['var(--acw,#ECFEFF)','var(--ac,#0891B2)','…']}[tipo]||['#eee','#333','·'];
+ var v=document.createElement('div');v.className='velo';v.id='fVelo';
+ v.innerHTML='<div class="fin" role="dialog" aria-modal="true"><div class="fh"><span class="fi" style="background:'+col[0]+';color:'+col[1]+'">'+col[2]+'</span><div><b>'+fEsc(titolo)+'</b></div></div><div class="fm">'+testoHtml+'</div>'+(bottoni&&bottoni.length?'<div class="fp">'+bottoni.map(function(b,i){return '<button class="fb '+(b[1]||'')+'" data-fb="'+i+'">'+fEsc(b[0])+'</button>';}).join('')+'</div>':'')+'</div>';
+ document.body.appendChild(v);
+ return new Promise(function(ok){v.addEventListener('click',function(e){var b=e.target.closest('[data-fb]');if(b){var i=+b.getAttribute('data-fb');fChiudi();ok(bottoni[i][2]);}else if(e.target===v&&tipo!=='attesa'){fChiudi();ok(null);}});
+  var s=v.querySelector('.fb.si,.fb.rosso');if(s)s.focus();});}
+function chiedi(titolo,testoHtml,si,rosso){return fApri('chiedi',titolo,testoHtml,[['Annulla','',false],[si||'Conferma',rosso?'rosso':'si',true]]);}
+function avvisa(tipo,titolo,testoHtml){return fApri(tipo,titolo,testoHtml,[['Chiudi','si',true]]);}
+function attendi(testo){fApri('attesa',testo||'Un momento…','<span class="gira"></span>'+fEsc(testo||'Sto lavorando…'),[]);}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){var v=document.getElementById('fVelo');if(v&&!v.querySelector('.gira'))v.click();}});
+
+/* PORTALE NEXT-110: Invia, Già inviato e Reinvia dentro la pagina. Stesse chiamate di prima ai webhook n8n
+   (invia-contratto manda la mail al cliente, segna-contratto-inviato aggiorna lo stato); la risposta HTML di n8n
+   si legge e si mostra in una finestra del portale, poi la lista si ricarica. */
+function testoDi(html,re){var m=html.match(re);return m?m[1].replace(/<[^>]+>/g,'').trim():'';}
+function apriPortale(pag){if(window.parent!==window){try{window.parent.postMessage({tipo:'apri',pag:pag},'*');return;}catch(e){}}window.open(N8+pag,'_blank','noopener');}
+async function inviaContratto(b){var url=b.getAttribute('data-invia'),nome=b.getAttribute('data-nome')||'',mail=b.getAttribute('data-mail')||'',re=b.getAttribute('data-reinvio')==='1';
+ if(!await chiedi(re?'Reinvia il contratto':'Invia il contratto',(re?'Rimando':'Mando')+' il contratto a <b>'+fEsc(nome)+'</b>'+(mail?' all\'indirizzo <b>'+fEsc(mail)+'</b>':'')+'?<br><br>Parte la mail al cliente con il PDF allegato.',re?'Reinvia':'Invia'))return;
+ attendi('Invio del contratto in corso…');
+ try{var r=await fetch(url);var h=await r.text();
+  if(/Contratto inviato con successo/i.test(h)){var em=testoDi(h,/font-size:18px;font-weight:bold;[^>]*>([^<]*)</i);await avvisa('ok','Contratto inviato','Il contratto è stato inviato'+(em?' a <b>'+fEsc(em)+'</b>':'')+'.<br>Lo stato della pratica ora è «inviato».');}
+  else if(/già stato inviato/i.test(h)){await avvisa('attenzione','Il contratto era già stato inviato',fEsc(testoDi(h,/font-size:16px;[^>]*>([\s\S]*?)<\/p>/i)||'Il contratto risulta già inviato.'));}
+  else{await avvisa('errore','Errore nell\'invio',fEsc(testoDi(h,/font-size:16px;[^>]*>([\s\S]*?)<\/p>/i)||testoDi(h,/<h1[^>]*>([\s\S]*?)<\/h1>/i)||('Risposta inattesa (HTTP '+r.status+')')));}
+ }catch(e){await avvisa('errore','Errore nell\'invio',fEsc(e.message||e));}
+ carica();}
+async function segnaInviato(b){var url=b.getAttribute('data-segna'),nome=b.getAttribute('data-nome')||'';
+ if(!await chiedi('Già inviato','Confermi che il contratto di <b>'+fEsc(nome)+'</b> è già stato inviato a mano?<br><br>Non parte nessuna mail: si aggiorna solo lo stato della pratica.','Sì, segna inviato'))return;
+ attendi('Aggiorno lo stato…');
+ try{var r=await fetch(url);var h=await r.text();
+  if(/Segnato come inviato/i.test(h))await avvisa('ok','Segnato come inviato','Il contratto di <b>'+fEsc(nome)+'</b> ora risulta inviato.');
+  else await avvisa('errore','Non è andato a buon fine','Risposta inattesa (HTTP '+r.status+').');
+ }catch(e){await avvisa('errore','Non è andato a buon fine',fEsc(e.message||e));}
+ carica();}
+document.addEventListener('click',function(e){var b;
+ if(b=e.target.closest('[data-invia]')){e.preventDefault();inviaContratto(b);return;}
+ if(b=e.target.closest('[data-segna]')){e.preventDefault();segnaInviato(b);return;}
+ if(b=e.target.closest('[data-apri]')){e.preventDefault();apriPortale(b.getAttribute('data-apri'));return;}
+});
 </script></body></html>
