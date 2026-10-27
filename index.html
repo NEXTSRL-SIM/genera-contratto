@@ -75,6 +75,20 @@ tr.cli:hover td.a{color:var(--ac)}
 .hd b{display:block;font-size:14px;font-weight:700}.hd small{display:block;font-size:12px;color:var(--ink3);margin-top:1px}
 .hd .x{margin-left:auto}
 .step.ok i{background:var(--gr);border-color:var(--gr);color:#fff}.step.ok b{color:var(--gr)}
+.spin{width:16px;height:16px;border:2px solid var(--acw);border-top-color:var(--ac);border-radius:50%;animation:gira .8s linear infinite;display:inline-block;vertical-align:-3px;margin-right:8px}
+@keyframes gira{to{transform:rotate(360deg)}}
+.step.ko i{background:var(--er);border-color:var(--er);color:#fff}.step.ko b{color:var(--er)}
+.okban{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--grw);border-radius:12px;margin:16px 18px 0}
+.okban i{width:30px;height:30px;border-radius:50%;background:var(--gr);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;flex:none}
+.okban b{display:block;color:var(--gr);font-size:13.5px}.okban small{display:block;font-size:12px;color:var(--ink2)}
+.koban{padding:12px 14px;background:#FEF2F2;border-left:4px solid var(--er);border-radius:12px;margin:16px 18px 0;color:#991B1B;font-size:13px}
+.koban ul{margin:8px 0 0 18px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 18px}
+.ig div{border:1px solid var(--ln);border-radius:10px;padding:8px 11px;background:var(--sf2)}
+.ig span{display:block;font-size:10px;letter-spacing:.08em;font-weight:800;color:var(--ink3);text-transform:uppercase}
+.ig b{font-size:13px;word-break:break-all}
+.brow{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px}
+.mnote{margin:0 18px 18px;padding:10px 12px;background:var(--blw);color:var(--bl);border-radius:10px;font-size:12px}
 @media (max-width:1000px){.g3,.g2{grid-template-columns:1fr}}
 </style></head><body>
 <div class="ph"><h1>Genera contratto</h1><p>Next S.r.l. — seleziona cliente e pratica</p><span class="agg" id="phx">automatismi validi per tutti i clienti</span></div>
@@ -149,6 +163,8 @@ function disegna(){
 /* un cliente dalla lista: stessa cosa del pulsante della pagina di prima (POST client_id) */
 document.addEventListener('click',function(e){
  var r=e.target.closest('tr.cli');if(r){apriCliente(r.getAttribute('data-cli'));return;}
+ var g=e.target.closest('[data-genera]');if(g){e.preventDefault();genera(g.getAttribute('data-genera'));return;}
+ var tp=e.target.closest('[data-torna2]');if(tp){e.preventDefault();if(P2)passo2(P2.c,P2.rows);return;}
  var cb=e.target.closest('[data-cambia]');if(cb){e.preventDefault();disegna();window.scrollTo(0,0);return;}
  var b=e.target.closest('.sg button');if(b&&!b.classList.contains('on'))imposta(b.getAttribute('data-par'),b.getAttribute('data-val'),b);
 });
@@ -163,7 +179,9 @@ async function apriCliente(id){
  try{var r=await fetch(EF+'?t='+encodeURIComponent(PASS)+'&cliente='+encodeURIComponent(id));var d=await r.json();if(!d.ok)throw new Error(d.errore||'errore');passo2(c,d.pratiche||[]);}
  catch(e){document.getElementById('corpo').innerHTML='<p class="empty">Errore: '+esc(e.message||e)+'</p><p><a href="#" class="btn" data-cambia="1">← Torna indietro</a></p>';}
 }
+var P2=null;
 function passo2(c,rows){
+ P2={c:c,rows:rows};
  var f=rows[0]&&rows[0].clients||{}; var nome=c.full_name||f.full_name||f.fiscal_code||'—', cf=c.fiscal_code||f.fiscal_code||'';
  var ini=nome.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
  var righe=rows.map(function(x){var p=x.practices||{},fis=(x.clients&&x.clients.fiscal_code)||'',origin=p.origin||'—',st=p.status||'new';
@@ -173,7 +191,7 @@ function passo2(c,rows){
   var det=[p.fv_kwp?String(p.fv_kwp).replace('.',',')+' kWp':'',tot?fmtE(tot):'',p.created_at?new Date(p.created_at).toLocaleDateString('it-IT'):''].filter(Boolean).join(' · ');
   var sl=STATI[st]||[st.replace(/_/g,' ').replace(/\b\w/g,function(m){return m.toUpperCase();}),'gy'];
   var url=N8+'prepara-contratto-submit?practice_combo='+encodeURIComponent(x.practice_id+'|'+fis);
-  return '<tr><td class="nm"><div class="pt"><span class="ic">'+svg(ico,16)+'</span><span style="min-width:0"><b>'+esc(tipo)+'</b><small>'+esc(origin)+'</small></span></div></td><td class="v" style="white-space:normal">'+esc(det)+'</td><td><span class="chip '+sl[1]+'">'+esc(sl[0])+'</span></td><td class="a"><a class="btn pri" href="'+url+'">'+svg('gen',13)+'Genera contratto</a></td></tr>';}).join('');
+  return '<tr><td class="nm"><div class="pt"><span class="ic">'+svg(ico,16)+'</span><span style="min-width:0"><b>'+esc(tipo)+'</b><small>'+esc(origin)+'</small></span></div></td><td class="v" style="white-space:normal">'+esc(det)+'</td><td><span class="chip '+sl[1]+'">'+esc(sl[0])+'</span></td><td class="a"><a class="btn pri" href="'+url+'" data-genera="'+esc(url)+'">'+svg('gen',13)+'Genera contratto</a></td></tr>';}).join('');
  var cg='<colgroup><col style="width:34%"><col style="width:26%"><col style="width:18%"><col style="width:22%"></colgroup>';
  var h='<div class="grid g2"><section class="c"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Cliente scelto</b><small>Ora scegli la pratica da cui fare il contratto</small></div></div>'
   +'<div class="sel"><div class="step ok"><i>✓</i><span><b>Cliente</b><small>scelto</small></span></div><div class="step on"><i>2</i><span><b>Pratica</b><small>scegli quale</small></span></div><div class="step"><i>3</i><span><b>Genera</b><small>crea il contratto</small></span></div>'
@@ -183,6 +201,49 @@ function passo2(c,rows){
   +(rows.length?'<table>'+cg+'<thead><tr><th>Pratica</th><th>Dettagli</th><th>Stato</th><th></th></tr></thead><tbody>'+righe+'</tbody></table>':'<p class="empty">Nessuna pratica trovata per questo cliente.</p>')
   +'</section></div>';
  document.getElementById('corpo').innerHTML=h; document.getElementById('phx').textContent='passo 2 di 3'; window.scrollTo(0,0);
+}
+/* ===== passo 3: la generazione. Si chiama lo stesso indirizzo di prima (prepara-contratto-submit),
+   ma dalla pagina: i passi restano qui e diventano verdi man mano. n8n risponde con la sua pagina
+   «Contratto generato» o «Errore»: se ne leggono i dati e si mostrano con la grafica del portale. ===== */
+function sinistra(st2,st3,sub3){
+ var c=P2&&P2.c||{}, f=P2&&P2.rows[0]&&P2.rows[0].clients||{}, nome=c.full_name||f.full_name||'—', cf=c.fiscal_code||f.fiscal_code||'';
+ var ini=nome.split(' ').map(function(w){return w[0]||'';}).join('').substring(0,2).toUpperCase();
+ return '<section class="c"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Contratto</b><small>Generazione dalla pratica scelta</small></div></div>'
+  +'<div class="sel"><div class="step ok"><i>✓</i><span><b>Cliente</b><small>scelto</small></span></div><div class="step '+st2+'"><i>'+(st2==='ok'?'✓':'2')+'</i><span><b>Pratica</b><small>scelta</small></span></div><div class="step '+st3+'"><i>'+(st3==='ok'?'✓':st3==='ko'?'!':'3')+'</i><span><b>Genera</b><small>'+sub3+'</small></span></div>'
+  +'<div class="cli1"><div style="display:flex;align-items:center;gap:10px;min-width:0"><span class="av">'+esc(ini)+'</span><span style="min-width:0"><b>'+esc(nome)+'</b><small>'+esc(cf)+'</small></span></div></div></div>'
+  +'<div class="ftr"><a href="#" data-cambia="1">← Torna a Genera contratto</a></div></section>';
+}
+async function genera(url){
+ document.getElementById('phx').textContent='passo 3 di 3';
+ document.getElementById('corpo').innerHTML='<div class="grid g2">'+sinistra('ok','on','sto creando il contratto')+'<section class="c"><div class="hd"><span class="i">'+svg('gen')+'</span><div><b>Genero il contratto</b><small>Compilo il PDF, lo salvo e mando la mail di approvazione: ci vuole qualche secondo.</small></div></div><p class="empty" style="text-align:left;padding:18px"><span class="spin"></span>Attendi, non chiudere la pagina…</p></section></div>';
+ var testo='';
+ try{ var r=await fetch(url); testo=await r.text(); if(!r.ok&&!testo) throw new Error('HTTP '+r.status); }
+ catch(e){ return esito('ko',{msg:'Non riesco a raggiungere n8n: '+(e.message||e)+'. Il contratto potrebbe essere stato generato lo stesso: controlla nella lista prima di riprovare.'}); }
+ var doc=new DOMParser().parseFromString(testo,'text/html');
+ if(/Contratto creato con successo/.test(testo)){
+  var dati={};doc.querySelectorAll('.iitem').forEach(function(x){var l=x.querySelector('.il'),v=x.querySelector('.iv');if(l&&v)dati[l.textContent.trim()]=v.textContent.trim();});
+  var m=testo.match(/var PDF_URL_RAW = ("(?:[^"\\]|\\.)*")/); var pdf=''; try{ pdf=m?JSON.parse(m[1]):''; }catch(e){}
+  var note=doc.querySelector('.mnote'); return esito('ok',{dati:dati,pdf:pdf,note:note?note.textContent.replace(/\s+/g,' ').trim():''});
+ }
+ var campi=[].map.call(doc.querySelectorAll('.campi-lista li'),function(x){return x.textContent.trim();});
+ var msg=(doc.querySelector('.msg')||{}).textContent||(doc.querySelector('h2')||{}).textContent||'';
+ esito('ko',{msg:msg.trim()||'n8n ha risposto senza dire se il contratto è stato creato.',campi:campi});
+}
+function esito(tipo,x){
+ var h;
+ if(tipo==='ok'){
+  var d=x.dati||{};
+  h='<div class="grid g2">'+sinistra('ok','ok','contratto creato')+'<section class="c"><div class="hd"><span class="i" style="background:var(--grw);color:var(--gr)">'+svg('firm')+'</span><div><b>Contratto generato</b><small>Next S.r.l.</small></div></div>'
+   +'<div class="okban"><i>✓</i><span><b>Contratto creato con successo</b><small>Il PDF è stato salvato e una mail di approvazione è stata inviata.</small></span></div>'
+   +'<div class="ig">'+['Cliente','Codice Fiscale','Email','Practice ID'].map(function(k){return '<div><span>'+esc(k==='Practice ID'?'Pratica':k)+'</span><b>'+esc(d[k]||'—')+'</b></div>';}).join('')+'</div>'
+   +'<div class="brow">'+(x.pdf?pdfBtn(x.pdf).replace('class="btn"','class="btn pri"'):'')+'<a class="btn" href="'+N8+'lead-form">Modifica dati</a><a class="btn" href="#" data-cambia="1">← Genera altro</a></div>'
+   +(x.note?'<div class="mnote">'+esc(x.note)+'</div>':'')+'</section></div>';
+ } else {
+  h='<div class="grid g2">'+sinistra('ok','ko','non riuscito')+'<section class="c"><div class="hd"><span class="i" style="background:#FEF2F2;color:var(--er);font-weight:800">!</span><div><b>Contratto non generato</b><small>Correggi i dati e riprova</small></div></div>'
+   +'<div class="koban">'+esc(x.msg||'')+(x.campi&&x.campi.length?'<ul>'+x.campi.map(function(c){return '<li>'+esc(c)+'</li>';}).join('')+'</ul>':'')+'</div>'
+   +'<div class="brow" style="padding-top:16px"><a class="btn pri" href="'+N8+'lead-form">Modifica dati</a><a class="btn" href="#" data-torna2="1">← Torna alle pratiche</a></div></section></div>';
+ }
+ document.getElementById('corpo').innerHTML=h; window.scrollTo(0,0);
 }
 async function imposta(par,val,b){document.querySelectorAll('.sg button').forEach(function(x){x.disabled=true;});
  try{var r=await fetch(EF,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({t:PASS,imposta:{par:par,valore:val}})});var d=await r.json();if(!d.ok)throw new Error(d.errore||'errore');DATI.scelte=d.scelte;disegna();dtoast('Salvato',false,1800);}
