@@ -306,7 +306,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var v=docum
    (invia-contratto manda la mail al cliente, segna-contratto-inviato aggiorna lo stato); la risposta HTML di n8n
    si legge e si mostra in una finestra del portale, poi la lista si ricarica. */
 function testoDi(html,re){var m=html.match(re);return m?m[1].replace(/<[^>]+>/g,'').trim():'';}
-function apriPortale(pag){if(window.parent!==window){try{window.parent.postMessage({tipo:'apri',pag:pag},'*');return;}catch(e){}}window.open(N8+pag,'_blank','noopener');}
+/* leadform-141: fuori dal portale Nuovo cliente si apre nel portale, non piu' su n8n (lead-form si spegne) */
+function apriPortale(pag){if(window.parent!==window){try{window.parent.postMessage({tipo:'apri',pag:pag},'*');return;}catch(e){}}window.open(pag==='lead-form'?'https://nextsrl-sim.github.io/portale/#apri=lead-form':N8+pag,'_blank','noopener');}
 async function inviaContratto(b){var url=b.getAttribute('data-invia'),nome=b.getAttribute('data-nome')||'',mail=b.getAttribute('data-mail')||'',re=b.getAttribute('data-reinvio')==='1';
  if(!await chiedi(re?'Reinvia il contratto':'Invia il contratto',(re?'Rimando':'Mando')+' il contratto a <b>'+fEsc(nome)+'</b>'+(mail?' all\'indirizzo <b>'+fEsc(mail)+'</b>':'')+'?<br><br>Parte la mail al cliente con il PDF allegato.',re?'Reinvia':'Invia'))return;
  attendi('Invio del contratto in corso…');
